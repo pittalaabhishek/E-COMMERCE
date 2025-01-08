@@ -1,0 +1,38 @@
+flipkart-clone/
+├── src/
+│   ├── components/
+│   │   ├── Layout/
+│   │   │   ├── Header.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   └── Sidebar.jsx
+│   │   ├── Product/
+│   │   │   ├── ProductCard.jsx
+│   │   │   ├── ProductList.jsx
+│   │   │   └── ProductDetail.jsx
+│   │   ├── Cart/
+│   │   │   ├── CartItem.jsx
+│   │   │   └── CartSummary.jsx
+│   │   └── Order/
+│   │       ├── OrderList.jsx
+│   │       └── OrderSummary.jsx
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── ProductDetail.jsx
+│   │   ├── Cart.jsx
+│   │   ├── Orders.jsx
+│   │   ├── Profile.jsx
+│   │   ├── Login.jsx
+│   │   └── Register.jsx
+│   ├── store/
+│   │   ├── atoms.js
+│   │   └── selectors.js
+│   ├── services/
+│   │   └── supabase.js
+│   ├── hooks/
+│   │   └── useAuth.js
+│   ├── utils/
+│   │   └── helpers.js
+│   ├── styles/
+│   │   └── global.css
+│   └── App.jsx
+└── package.json
