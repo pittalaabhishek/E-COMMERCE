@@ -1,14 +1,4 @@
-// import { createClient } from '@supabase/supabase-js';
-
-// const supabaseUrl = 'https://tgvlscyrzlwdlebgyaxj.supabase.co';
-// const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRndmxzY3lyemx3ZGxlYmd5YXhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MzI4NzMsImV4cCI6MjA1MDUwODg3M30.ijg4aYcmOuJyudroWG7svoLrPI1R83XnR-OoAfK-F7U';
-// const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRndmxzY3lyemx3ZGxlYmd5YXhqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNDkzMjg3MywiZXhwIjoyMDUwNTA4ODczfQ.SKMPRc_HkikzULUQNKZU8VCbmb8vCZ_j-OpMWjUNF6A';
-
-
-// export const serviceSupabase = createClient(supabaseUrl, supabaseServiceKey);
-// export const supabase = createClient(supabaseUrl, supabaseKey);
-
-import { supabase } from '../Auth/Client';
+import { supabase } from "../Auth/Client";
 
 // Auth functions
 export const signUp = async (email, password, name, phone) => {
@@ -40,77 +30,207 @@ export const signOut = async () => {
 
 // Products functions
 export const getProducts = async () => {
+  console.log("inside getProducts");
+  console.log(supabase);
+
   const { data, error } = await supabase
-    .from('products')
-    .select('*, categories(name)');
+    .from("products")
+    .select("*, categories(name)");
+  console.log("inside supabase getProducts", data);
   return { data, error };
 };
 
 export const getProductById = async (id) => {
   const { data, error } = await supabase
-    .from('products')
-    .select('*, categories(name)')
-    .eq('id', id)
+    .from("products")
+    .select("*, categories(name)")
+    .eq("id", id)
     .single();
   return { data, error };
 };
 
 // Cart functions
 export const getCartItems = async (userId) => {
+  if (!userId) {
+    console.error("userId is undefined or null");
+    throw new Error("userId is required");
+  }
+
   const { data, error } = await supabase
-    .from('cart')
-    .select('*, products(*)')
-    .eq('user_id', userId);
+    .from("cart")
+    .select(
+      `
+      *,
+      products (
+        id,
+        name,
+        price,
+        image_url
+      )
+    `
+    )
+    .eq("user_id", userId)
+    .order("created_at", { ascending: true });
 
   if (error) {
+    console.error("Error fetching cart items:", error);
     throw error;
   }
 
-  return { data, error };
+  return { data: data || [], error: null };
 };
+// export const getCartItems = async (userId) => {
+//   if (!userId) {
+//     console.error("userId is undefined or null");
+//     throw new Error("userId is required");
+//   }
+
+//   const { data, error } = await supabase
+//     .from("cart")
+//     .select(
+//       `
+//             id,
+//             user_id,
+//             product_id,
+//             quantity,
+//             products (
+//               id,
+//               name,
+//               price,
+//               image_url
+//             )
+//           `
+//     )
+//     .eq("user_id", userId);
+// .eq("user_id", userId.toString());
+// .match({ user_id: userId});
+// .filter('user_id', 'eq', userId);
+// .eq("user_id", userId);
+
+//   console.log("Inside getCartItems function in supabase.js");
+
+//   if (error) {
+//     console.log("ERROR Inside getCartItems function in supabase.js");
+//     throw error;
+//   }
+
+//   return { data, error };
+// };
 
 export const addToCart = async (userId, productId) => {
-  const { data, error } = await supabase
-    .from('cart')
-    .insert([{ user_id: userId, product_id: productId }]);
+  // const { data, error } = await supabase
+  //   .from("cart")
+  //   .insert([{ user_id: userId, product_id: productId, quantity: 1 }]);
 
-  if (error) {
-    throw error;
+  // if (error) {
+  //   throw error;
+  // }
+
+  // return { data, error };
+  try {
+    // First, check if the item exists
+    const { data: existingItems, error: fetchError } = await supabase
+      .from("cart")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("product_id", productId);
+
+    if (fetchError) throw fetchError;
+
+    if (existingItems && existingItems.length > 0) {
+      // Item exists, update quantity
+      const existingItem = existingItems[0];
+      const { data, error } = await supabase
+        .from("cart")
+        .update({ quantity: existingItem.quantity + 1 })
+        .eq("user_id", userId)
+        .eq("product_id", productId)
+        .select("*, products(id, name, price, image_url)"); // Match your getCartItems select
+
+      if (error) throw error;
+      return { data: data[0], error: null };
+    } else {
+      // Item doesn't exist, insert new
+      const { data, error } = await supabase
+        .from("cart")
+        .insert([
+          {
+            user_id: userId,
+            product_id: productId,
+            quantity: 1,
+          },
+        ])
+        .select("*, products(id, name, price, image_url)"); // Match your getCartItems select
+
+      if (error) throw error;
+      return { data: data[0], error: null };
+    }
+  } catch (error) {
+    console.error("Error in addToCart:", error);
+    return { data: null, error };
   }
-  
-  return { data, error };
 };
 
 export const removeFromCart = async (cartId) => {
-  const { error } = await supabase
-    .from('cart')
-    .delete()
-    .eq('id', cartId);
-  return { error };
+  try {
+    const { error } = await supabase.from("cart").delete().eq("id", cartId);
+
+    if (error) throw error;
+    return { error: null };
+  } catch (error) {
+    console.error("Error removing item from cart:", error);
+    return { error };
+  }
+};
+export const updateCartQuantity = async (cartId, quantity) => {
+  try {
+    if (quantity <= 0) {
+      return removeFromCart(cartId);
+    }
+
+    // Update the specific cart item by its unique ID
+    const { data, error } = await supabase
+      .from("cart")
+      .update({ quantity })
+      .eq("id", cartId) // Using the specific cart item ID
+      .select("*, products(id, name, price, image_url)");
+
+    if (error) {
+      console.error("Error updating cart quantity:", error);
+      throw error;
+    }
+
+    return { data: data[0], error: null };
+  } catch (error) {
+    console.error("Error in updateCartQuantity:", error);
+    return { data: null, error };
+  }
 };
 
 // Orders functions
 export const createOrder = async (userId, totalAmount, items) => {
   const { data: order, error: orderError } = await supabase
-    .from('orders')
-    .insert([{
-      user_id: userId,
-      total_amount: totalAmount,
-      status: 'pending'
-    }])
+    .from("orders")
+    .insert([
+      {
+        user_id: userId,
+        total_amount: totalAmount,
+        status: "pending",
+      },
+    ])
     .select()
     .single();
 
   if (orderError) return { error: orderError };
 
-  const orderItems = items.map(item => ({
+  const orderItems = items.map((item) => ({
     order_id: order.id,
     product_id: item.product_id,
-    price: item.products.price
+    price: item.products.price,
   }));
 
   const { error: itemsError } = await supabase
-    .from('order_items')
+    .from("order_items")
     .insert(orderItems);
 
   return { data: order, error: itemsError };
@@ -118,15 +238,35 @@ export const createOrder = async (userId, totalAmount, items) => {
 
 export const getOrders = async (userId) => {
   const { data, error } = await supabase
-    .from('orders')
-    .select(`
+    .from("orders")
+    .select(
+      `
       *,
       order_items (
         *,
         products (*)
       )
-    `)
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
+    `
+    )
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
   return { data, error };
+};
+
+//Profile Functions
+export const handleSave = async (values) => {
+  const { name, phone } = values;
+
+  const { error } = await supabase
+    .from("users")
+    .update({ name, phone })
+    .eq("id", user.id);
+
+  if (error) {
+    message.error("Error updating profile.");
+  } else {
+    message.success("Profile updated successfully!");
+    setUserData({ ...userData, name, phone });
+    setIsEditing(false);
+  }
 };

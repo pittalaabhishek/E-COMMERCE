@@ -39,6 +39,7 @@ const Home = () => {
       marginTop: '32px',
     },
   };
+  console.log("Home...")
 
   return (
     <Content style={styles.content}>

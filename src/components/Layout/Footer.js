@@ -20,7 +20,8 @@ const AppFooter = () => {
           <Col xs={24} sm={12} md={6}>
             <Title level={4} className="footer-title">About</Title>
             <Space direction="vertical">
-              <Link to="/about" className="footer-link">About Us</Link>
+              {/* <Link to="/about" className="footer-link">About Us</Link> */}
+              <a href='https://corporate.flipkart.net/corporate-home' className='footer-link'>About Us</a>
               <Link to="/careers" className="footer-link">Careers</Link>
               <Link to="/press" className="footer-link">Press</Link>
             </Space>

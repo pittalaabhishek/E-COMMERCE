@@ -5,7 +5,7 @@ export const cartTotalSelector = selector({
   key: 'cartTotal',
   get: ({ get }) => {
     const cart = get(cartState);
-    return cart.reduce((total, item) => total + item.products.price, 0);
+    return cart.reduce((total, item) => total + item.products.price * item.quantity, 0);
   },
 });
 

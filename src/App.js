@@ -1,28 +1,36 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Layout, ConfigProvider } from 'antd';
-import { RecoilRoot } from 'recoil';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { supabase } from "./Auth/Client";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link
+} from "react-router-dom";
+import { Layout, ConfigProvider } from "antd";
+import "./App.css";
+import { useSetRecoilState, useRecoilState, useRecoilValue } from 'recoil';
+import { userState, loginState, userNameState, cartState } from './store/atoms';
 
 // Layout Components
-import Header from './components/Layout/Header';
-import Footer from './components/Layout/Footer';
+import Header from "./components/Layout/Header";
+import Footer from "./components/Layout/Footer";
 
 // Pages
-import Home from './pages/Home';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import Orders from './pages/Orders';
-import Profile from './pages/Profile';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Home from "./pages/Home";
+import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
+import Orders from "./pages/Orders";
+import MyProfile from "./pages/MyProfile";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { getCartItems } from "./services/supabase";
 
 // Hooks
-import useAuth from './hooks/useAuth';
-import { Link } from 'lucide-react';
+import useAuth from "./hooks/useAuth";
 
 // Protected Route Component
-<Link path="/login"/>
+<Link path="/login" />;
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? children : <Navigate to="/login" replace />;
@@ -30,40 +38,128 @@ const ProtectedRoute = ({ children }) => {
 
 const theme = {
   token: {
-    colorPrimary: '#2874f0',
+    colorPrimary: "#2874f0",
     borderRadius: 4,
   },
 };
 
 const App = () => {
+  const setUser = useSetRecoilState(userState);
+  const setUserName = useSetRecoilState(userNameState);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
+  const [cart, setCart] = useRecoilState(cartState);
+  const user = useRecoilValue(userState);
+  // const [setLoading] = useState(true);
+
+  useEffect(() => {
+      console.log("before fetching cart details");
+      const fetchCart = async () => {
+        if (!user?.id) {
+          console.log("No user ID available, skipping fetch");
+          // setLoading(false);
+          return;
+        }
+  
+        try {
+          console.log("Fetching cart for user ID:", user.id);
+          const { data, error } = await getCartItems(user.id);
+          if (error) {
+            console.error("Error fetching cart:", error);
+            throw error;
+          }
+  
+          console.log("Cart data received:", data);
+          if (data) {
+            setCart(data);
+            console.log("Filtered valid cart items:");
+          } else {
+            console.log("Invalid cart data structure:", data);
+            setCart([]);
+          }
+        } catch (error) {
+          console.error("Error fetching cart:", error);
+        } finally {
+          // setLoading(false);
+        }
+      };
+      if (user?.id) {
+        fetchCart();
+      }
+    }, [user, setCart]);
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log("Auth state changed:", _event, session);
+
+      if (session) {
+        try {
+        //   // const { data: profile, error: profileError } = await supabase
+        //   //   .from("users")
+        //   //   .select("*")
+        //   //   .eq("id", session.user.id)
+        //   //   .single();
+
+        //   if (false) {
+        //     throw // Fallback to session data if profile fetch fails
+        //   } else {
+        setUser({ ...session.user,}); // Merge session data with profile
+        setIsLoggedIn(true);
+        setUserName(session.user.user_metadata.name);
+        console.log('name inside useEffect', session.user.name);
+          // }
+        } catch (error) {
+          console.error("Error in auth state listener:", error);
+        }
+      } else {
+        setUser(null); // Clear user state on logout
+        setIsLoggedIn(false);
+        setUserName('');
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe(); // Cleanup subscription on unmount
+    };
+  }, [isLoggedIn]);
+
   return (
-    <RecoilRoot>
       <ConfigProvider theme={theme}>
-        <Router>
+        <Router>\
           <Layout className="layout-container">
             <Header />
-            <Layout.Content className="layout-content"> {/* Offset for fixed header */}
+            <Layout.Content className="layout-content">
+              {" "}
+              {/* Offset for fixed header */}
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/cart" element={
-                  <ProtectedRoute>
-                    <Cart />
-                  </ProtectedRoute>
-                } />
-                <Route path="/orders" element={
-                  <ProtectedRoute>
-                    <Orders />
-                  </ProtectedRoute>
-                } />
-                <Route path="/profile" element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } />
-                <Route path="/login" element={
-                    <Login />
-                } />
+                <Route
+                  path="/cart"
+                  element={
+                    <ProtectedRoute>
+                      <Cart />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/orders"
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/MyProfile"
+                  element={
+                    <ProtectedRoute>
+                      <MyProfile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/login" element={<Login />} />
                 {/* <Route path="/login" element={<Login />} /> */}
                 <Route path="/register" element={<Register />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
@@ -73,7 +169,6 @@ const App = () => {
           </Layout>
         </Router>
       </ConfigProvider>
-    </RecoilRoot>
   );
 };
 

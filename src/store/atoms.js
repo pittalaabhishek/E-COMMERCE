@@ -6,6 +6,11 @@ export const userState = atom({
   default: null
 })
 
+export const userNameState = atom({
+  key: 'userNameState',
+  default: 'Guest'
+})
+
 export const cartState = atom({
   key: 'cartState',
   default: []
@@ -14,4 +19,9 @@ export const cartState = atom({
 export const productsState = atom({
   key: 'productsState',
   default: []
+})
+
+export const loginState = atom({
+  key: 'loginState',
+  default: false,
 })

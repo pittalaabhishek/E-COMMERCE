@@ -41,10 +41,10 @@
 // //               { type: 'email', message: 'Please enter a valid email!' }
 // //             ]}
 // //           >
-// //             <Input 
-// //               prefix={<UserOutlined />} 
-// //               placeholder="Email" 
-// //               size="large" 
+// //             <Input
+// //               prefix={<UserOutlined />}
+// //               placeholder="Email"
+// //               size="large"
 // //             />
 // //           </Form.Item>
 
@@ -182,10 +182,10 @@
 //               { type: 'email', message: 'Please enter a valid email!' }
 //             ]}
 //           >
-//             <Input 
-//               prefix={<UserOutlined />} 
-//               placeholder="Email" 
-//               size="large" 
+//             <Input
+//               prefix={<UserOutlined />}
+//               placeholder="Email"
+//               size="large"
 //             />
 //           </Form.Item>
 
@@ -201,11 +201,11 @@
 //           </Form.Item>
 
 //           <Form.Item>
-//             <Button 
-//               type="primary" 
-//               htmlType="submit" 
-//               block 
-//               size="large" 
+//             <Button
+//               type="primary"
+//               htmlType="submit"
+//               block
+//               size="large"
 //               loading={loading} // Show spinner during loading
 //             >
 //               Log In
@@ -223,14 +223,14 @@
 // };
 
 // export default Login;
-import React, { useState } from 'react';
-import { Layout, Card, Form, Input, Button, Typography, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
-import '../styles/Login.css';
-import { useRecoilState } from 'recoil';
-import { userState } from '../store/atoms';
+import React, { useState } from "react";
+import { Layout, Card, Form, Input, Button, Typography, message } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import "../styles/Login.css";
+import { useRecoilState } from "recoil";
+import { userState } from "../store/atoms";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -242,20 +242,16 @@ const Login = () => {
   const [user, setUser] = useRecoilState(userState);
 
   const onFinish = async (values) => {
-    console.log("Before loading started")
     setLoading(true);
-    console.log("After loading started")
     try {
-      console.log("Before await")
-      await login(values.email, values.password);
-      console.log("After await")
+      console.log("Before await");
+      const x = await login(values.email, values.password);
+      console.log({ x });
       setUser({ email: values.email });
-      message.success('Successfully logged in!');
-      console.log('Current user state', user);
-      navigate('/', { replace: true }); // Redirect to home
+      message.success("Successfully logged in!");
+      navigate("/", { replace: true }); // Redirect to home
     } catch (error) {
-      console.error('Login error:', error);
-      message.error(error?.message || 'Login failed. Please try again.');
+      message.error(error?.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -269,28 +265,20 @@ const Login = () => {
           <Text type="secondary">Please log in to your account</Text>
         </div>
 
-        <Form
-          name="login"
-          onFinish={onFinish}
-          layout="vertical"
-        >
+        <Form name="login" onFinish={onFinish} layout="vertical">
           <Form.Item
             name="email"
             rules={[
-              { required: true, message: 'Please input your email!' },
-              { type: 'email', message: 'Please enter a valid email!' }
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email!" },
             ]}
           >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="Email"
-              size="large"
-            />
+            <Input prefix={<UserOutlined />} placeholder="Email" size="large" />
           </Form.Item>
 
           <Form.Item
             name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Input.Password
               prefix={<LockOutlined />}
@@ -322,4 +310,3 @@ const Login = () => {
 };
 
 export default Login;
-
