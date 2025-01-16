@@ -162,36 +162,6 @@ export const updateCartQuantity = async (cartId, quantity) => {
   }
 };
 
-// Orders functions
-// export const createOrder = async (userId, totalAmount, items) => {
-//   const { data: order, error: orderError } = await supabase
-//     .from("orders")
-//     .insert([
-//       {
-//         user_id: userId,
-//         total_amount: Number(totalAmount),
-//         status: "pending"
-//       },
-//     ])
-//     .select()
-//     .single();
-
-//     console.log("order details:", order);
-//     console.log("order error:", orderError);
-//   if (orderError) return { error: orderError };
-
-//   const orderItems = items.map((item) => ({
-//     order_id: order?.id,
-//     product_id: item.product_id,
-//     price: item.price,
-//   }));
-
-//   const { error: itemsError } = await supabase
-//     .from("order_items")
-//     .insert(orderItems);
-
-//   return { data: order, error: itemsError };
-// };
 export const createOrder = async (orderData) => {
   const { 
     user_id, 

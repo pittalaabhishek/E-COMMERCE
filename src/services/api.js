@@ -29,16 +29,7 @@ export const api = {
       .select('*, products(*)')
       .eq('user_id', user_id);
   },
-
-  // async addToCart(user_id, product_id, quantity = 1) {
-  //   return await supabase
-  //     .from('cart')
-  //     .upsert({ 
-  //       user_id, 
-  //       product_id, 
-  //       quantity
-  //     });
-  // },
+  
   async addToCart(user_id, product_id, quantity = 1) {
     // Fetch the current cart entry
     const { data, error } = await supabase
