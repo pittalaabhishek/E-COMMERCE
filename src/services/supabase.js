@@ -79,54 +79,8 @@ export const getCartItems = async (userId) => {
 
   return { data: data || [], error: null };
 };
-// export const getCartItems = async (userId) => {
-//   if (!userId) {
-//     console.error("userId is undefined or null");
-//     throw new Error("userId is required");
-//   }
-
-//   const { data, error } = await supabase
-//     .from("cart")
-//     .select(
-//       `
-//             id,
-//             user_id,
-//             product_id,
-//             quantity,
-//             products (
-//               id,
-//               name,
-//               price,
-//               image_url
-//             )
-//           `
-//     )
-//     .eq("user_id", userId);
-// .eq("user_id", userId.toString());
-// .match({ user_id: userId});
-// .filter('user_id', 'eq', userId);
-// .eq("user_id", userId);
-
-//   console.log("Inside getCartItems function in supabase.js");
-
-//   if (error) {
-//     console.log("ERROR Inside getCartItems function in supabase.js");
-//     throw error;
-//   }
-
-//   return { data, error };
-// };
 
 export const addToCart = async (userId, productId) => {
-  // const { data, error } = await supabase
-  //   .from("cart")
-  //   .insert([{ user_id: userId, product_id: productId, quantity: 1 }]);
-
-  // if (error) {
-  //   throw error;
-  // }
-
-  // return { data, error };
   try {
     // First, check if the item exists
     const { data: existingItems, error: fetchError } = await supabase
@@ -139,6 +93,7 @@ export const addToCart = async (userId, productId) => {
 
     if (existingItems && existingItems.length > 0) {
       // Item exists, update quantity
+      console.log('Existing items:', existingItems);
       const existingItem = existingItems[0];
       const { data, error } = await supabase
         .from("cart")
@@ -208,32 +163,95 @@ export const updateCartQuantity = async (cartId, quantity) => {
 };
 
 // Orders functions
-export const createOrder = async (userId, totalAmount, items) => {
+// export const createOrder = async (userId, totalAmount, items) => {
+//   const { data: order, error: orderError } = await supabase
+//     .from("orders")
+//     .insert([
+//       {
+//         user_id: userId,
+//         total_amount: Number(totalAmount),
+//         status: "pending"
+//       },
+//     ])
+//     .select()
+//     .single();
+
+//     console.log("order details:", order);
+//     console.log("order error:", orderError);
+//   if (orderError) return { error: orderError };
+
+//   const orderItems = items.map((item) => ({
+//     order_id: order?.id,
+//     product_id: item.product_id,
+//     price: item.price,
+//   }));
+
+//   const { error: itemsError } = await supabase
+//     .from("order_items")
+//     .insert(orderItems);
+
+//   return { data: order, error: itemsError };
+// };
+export const createOrder = async (orderData) => {
+  const { 
+    user_id, 
+    total_amount, 
+    products 
+  } = orderData;
+
+  if (!user_id) {
+    console.error('User ID is required');
+    return { error: { message: 'User ID is required' } };
+  }
+
   const { data: order, error: orderError } = await supabase
     .from("orders")
-    .insert([
-      {
-        user_id: userId,
-        total_amount: totalAmount,
-        status: "pending",
-      },
-    ])
+    .insert({
+      user_id: user_id,
+      total_amount: Number(total_amount),
+      status: "processing"
+    })
     .select()
     .single();
 
-  if (orderError) return { error: orderError };
+  console.log("Order details:", order);
+  console.log("Order error:", orderError);
 
-  const orderItems = items.map((item) => ({
+  if (orderError) {
+    console.error('Order insertion error:', orderError);
+    return { error: orderError };
+  }
+
+  const orderItems = products.map((item) => ({
     order_id: order.id,
-    product_id: item.product_id,
-    price: item.products.price,
+    product_id: item.products?.id || item.product_id,
+    price: Number(item.products?.price || item.price),
   }));
 
-  const { error: itemsError } = await supabase
+  const { data: insertedItems, error: itemsError } = await supabase
     .from("order_items")
-    .insert(orderItems);
+    .insert(orderItems)
+    .select();
 
-  return { data: order, error: itemsError };
+  if (itemsError) {
+    console.error('Order items insertion error:', itemsError);
+    
+    //Rollback order if items insertion fails
+    await supabase
+      .from("orders")
+      .delete()
+      .eq('id', order.id);
+
+    return { error: itemsError };
+  }
+
+  return { 
+    data: { 
+      order, 
+      orderItems: insertedItems 
+    }, 
+    error: null 
+  };
 };
 
 export const getOrders = async (userId) => {
@@ -251,22 +269,4 @@ export const getOrders = async (userId) => {
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
   return { data, error };
-};
-
-//Profile Functions
-export const handleSave = async (values) => {
-  const { name, phone } = values;
-
-  const { error } = await supabase
-    .from("users")
-    .update({ name, phone })
-    .eq("id", user.id);
-
-  if (error) {
-    message.error("Error updating profile.");
-  } else {
-    message.success("Profile updated successfully!");
-    setUserData({ ...userData, name, phone });
-    setIsEditing(false);
-  }
 };

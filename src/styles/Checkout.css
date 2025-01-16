@@ -1,0 +1,154 @@
+.checkout-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f0f2f5;
+}
+
+.checkout-container .ant-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.cart-item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-right: 15px;
+  border-radius: 4px;
+}
+
+.cart-item-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-item-details .ant-typography {
+  margin-bottom: 5px;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.order-confirmation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.order-confirmation .anticon {
+  margin-bottom: 20px;
+  color: #52c41a;
+}
+
+/* Address Form Styling */
+.checkout-container .ant-form-item-label {
+  font-weight: 500;
+}
+
+.checkout-container .ant-input,
+.checkout-container .ant-select {
+  border-radius: 4px;
+}
+
+/* Payment Method Styling */
+.checkout-container .ant-radio-wrapper {
+  margin-right: 20px;
+  margin-bottom: 15px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .checkout-container {
+    padding: 10px;
+  }
+
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item-image {
+    margin-bottom: 10px;
+    align-self: center;
+  }
+}
+
+/* Steps Styling */
+.checkout-container .ant-steps {
+  margin-bottom: 30px;
+}
+
+.checkout-container .ant-steps-item-title {
+  font-size: 14px;
+}
+
+/* Button Styling */
+.checkout-container .ant-btn-primary {
+  background-color: #2874f0;
+  border-color: #2874f0;
+  border-radius: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.checkout-container .ant-btn-primary:hover {
+  background-color: #1f5bc7;
+  border-color: #1f5bc7;
+}
+
+/* Error and Success Messages */
+.checkout-container .ant-message {
+  z-index: 1000;
+}
+
+.checkout-container .ant-message-notice-content {
+  border-radius: 4px;
+}
+
+/* Additional Hover and Focus Effects */
+.cart-item:hover {
+  background-color: #f5f5f5;
+  transition: background-color 0.3s ease;
+}
+
+.checkout-container .ant-input:focus,
+.checkout-container .ant-select:focus {
+  border-color: #2874f0;
+  box-shadow: 0 0 0 2px rgba(40, 116, 240, 0.1);
+}
+
+/* Scrollbar Styling */
+.checkout-container {
+  scrollbar-width: thin;
+  scrollbar-color: #2874f0 #f0f2f5;
+}
+
+.checkout-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.checkout-container::-webkit-scrollbar-track {
+  background: #f0f2f5;
+}
+
+.checkout-container::-webkit-scrollbar-thumb {
+  background-color: #2874f0;
+  border-radius: 4px;
+}

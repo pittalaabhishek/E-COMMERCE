@@ -1,0 +1,121 @@
+/* OrderSummary Specific Styles */
+:root {
+  --primary-color: #2874f0;
+  --secondary-color: #ffffff;
+  --text-color: #212121;
+  --background-color: #f1f3f6;
+  --border-color: #e0e0e0;
+  --secondary-text-color: #878787;
+}
+
+.order-summary-container {
+  background-color: var(--secondary-color);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 15px;
+}
+
+.order-summary-list {
+  width: 100%;
+}
+
+.order-summary-list-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.order-summary-list-item:last-child {
+  border-bottom: none;
+}
+
+.order-summary-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-right: 15px;
+  border-radius: 4px;
+}
+
+.order-summary-product-details {
+  flex-grow: 1;
+}
+
+.order-summary-product-name {
+  color: var(--text-color);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.order-summary-product-category {
+  color: var(--secondary-text-color);
+  font-size: 12px;
+}
+
+.order-summary-product-price {
+  color: var(--text-color);
+  font-weight: 600;
+  text-align: right;
+}
+
+.order-summary-divider {
+  margin: 15px 0 !important;
+  border-top-color: var(--border-color);
+}
+
+.order-summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-summary-total-label {
+  color: var(--text-color);
+  font-weight: 600 !important;
+  margin-bottom: 0 !important;
+}
+
+.order-summary-total-value {
+  color: var(--primary-color);
+  font-weight: 600 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .order-summary-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .order-summary-image {
+    margin-bottom: 10px;
+    align-self: center;
+  }
+
+  .order-summary-product-details {
+    width: 100%;
+    text-align: center;
+  }
+
+  .order-summary-product-price {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.order-summary-container {
+  animation: fadeIn 0.3s ease-in-out;
+}

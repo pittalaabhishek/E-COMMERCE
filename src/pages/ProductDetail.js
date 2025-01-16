@@ -42,6 +42,7 @@ const ProductDetailPage = () => {
       </div>
     );
   }
+  console.log("Product Details:", product);
 
   return (
     <Content>

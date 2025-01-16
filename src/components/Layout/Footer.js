@@ -48,10 +48,18 @@ const AppFooter = () => {
           <Col xs={24} sm={12} md={6}>
             <Title level={4} className="footer-title">Social</Title>
             <Space size="large">
+              <a href="https://www.facebook.com/flipkart/" className='footer-link'>
               <FacebookOutlined className="social-icon" />
+              </a>
+              <a href="https://x.com/Flipkart?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor&mx=2" className='footer-link'>
               <TwitterOutlined className="social-icon" />
-              <InstagramOutlined className="social-icon" />
+              </a>
+              <a href="https://www.instagram.com/flipkart/?hl=en" className='footer-link'>
+                <InstagramOutlined className="social-icon" />
+              </a>
+              <a href="https://in.linkedin.com/company/flipkart" className='footer-link'>
               <LinkedinOutlined className="social-icon" />
+              </a>
             </Space>
           </Col>
         </Row>

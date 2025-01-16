@@ -1,45 +1,70 @@
-import React from 'react';
-import { List, Image, Typography, Divider } from 'antd';
+import React from "react";
+import { Card, Button, Typography, Divider } from "antd";
+import { useRecoilValue } from "recoil";
+import { cartState } from "../../store/atoms";
+import { useNavigate } from "react-router-dom";
 
 const { Text, Title } = Typography;
 
-const OrderSummary = ({ order }) => {
+const OrderSummary = () => {
+  const cart = useRecoilValue(cartState);
+  const navigate = useNavigate();
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.products?.price * (item?.quantity || 1),
+    0
+  );
+
+  const deliveryCharge = total > 500 ? 0 : 40;
+  const tax = total * 0.18;
+  const finalTotal = total + deliveryCharge + tax;
+
   return (
-    <div>
-      <List
-        itemLayout="horizontal"
-        dataSource={order.order_items}
-        renderItem={(item) => (
-          <List.Item>
-            <div className="flex w-full">
-              <Image
-                width={80}
-                src={item.products.image_url}
-                alt={item.products.name}
-                className="object-contain"
-              />
-              <div className="ml-4 flex-grow">
-                <Text strong>{item.products.name}</Text>
-                <br />
-                <Text type="secondary">
-                  Category: {item.products.categories.name}
-                </Text>
-              </div>
-              <div className="text-right">
-                <Text strong>₹{item.price}</Text>
-              </div>
-            </div>
-          </List.Item>
-        )}
-      />
-      
-      <Divider />
-      
-      <div className="flex justify-between">
-        <Title level={5}>Total Amount</Title>
-        <Title level={5}>₹{order.total_amount}</Title>
+    <Card className="cart-summary-card">
+      <div className="cart-summary-container">
+        <div>
+          <div className="cart-summary-item">
+            <Text className="cart-summary-item-label">
+              Price ({cart.length} items)
+            </Text>
+            <Text className="cart-summary-item-value">
+              ₹{total.toFixed(2)}
+            </Text>
+          </div>
+
+          <div className="cart-summary-item">
+            <Text className="cart-summary-item-label">
+              Delivery Charges
+            </Text>
+            <Text 
+              className={`cart-summary-item-value ${
+                deliveryCharge === 0 ? 'cart-summary-item-free' : ''
+              }`}
+            >
+              {deliveryCharge === 0 ? "FREE" : `₹${deliveryCharge}`}
+            </Text>
+          </div>
+
+          <div className="cart-summary-item">
+            <Text className="cart-summary-item-label">GST</Text>
+            <Text className="cart-summary-item-value">
+              ₹{tax.toFixed(2)}
+            </Text>
+          </div>
+
+          <Divider className="cart-summary-divider" />
+
+          <div className="cart-summary-total">
+            <Title level={5} className="cart-summary-total-label">
+              Total Amount
+            </Title>
+            <Title level={5} className="cart-summary-total-value">
+              ₹{finalTotal.toFixed(2)}
+            </Title>
+          </div>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

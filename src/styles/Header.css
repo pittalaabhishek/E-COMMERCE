@@ -30,6 +30,7 @@
   background: white;
   border-radius: 4px;
   overflow: hidden;
+  justify-content: space-between;
 }
 
 .search-input {

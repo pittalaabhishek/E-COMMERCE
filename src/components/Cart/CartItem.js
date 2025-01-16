@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Button, InputNumber, Typography, Image } from "antd";
+import { Card, Button, InputNumber, Typography, Image, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useSetRecoilState } from "recoil";
 import { cartState } from "../../store/atoms";
@@ -13,28 +13,19 @@ const CartItem = ({ item }) => {
   const handleRemove = async () => {
     try {
       const { error } = await removeFromCart(item.id);
-      if (error) throw error;
 
       setCart((prevCart) =>
         prevCart.filter((cartItem) => cartItem.id !== item.id)
       );
     } catch (error) {
-      console.error("Error removing item:", error);
+      message.error("Failed to remove from cart.");
     }
   };
 
   const handleQuantityChange = async (newQuantity) => {
-    // setCart((prevCart) =>
-    //   prevCart.map((cartItem) =>
-    //     cartItem.id === item.id
-    //       ? { ...cartItem, quantity: newQuantity }
-    //       : cartItem
-    //   )
-    // );
     try {
       await updateCartQuantity(item.id, newQuantity);
 
-      // Update the cart state locally
       setCart((prevCart) =>
         prevCart.map((cartItem) =>
           cartItem.id === item.id
@@ -48,7 +39,7 @@ const CartItem = ({ item }) => {
   };
 
   return (
-    <Card className="mb-4">
+    <Card className="ml-4">
       <div className="flex items-center">
         <Image
           src={item.products?.image_url}
@@ -58,9 +49,9 @@ const CartItem = ({ item }) => {
         />
 
         <div className="flex-grow ml-4">
-          <Title level={5}>{item.products.name}</Title>
+          <Title level={5}>{item.products?.name}</Title>
           <Text type="secondary">
-            {item.products?.categories?.name}
+            {item.products?.category_name}
           </Text>
           <div className="mt-2">
             <Text strong>₹{item.products?.price || 0}</Text>

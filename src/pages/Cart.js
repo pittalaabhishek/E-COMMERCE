@@ -15,43 +15,6 @@ const Cart = () => {
 
   console.log("User state:", user);
   console.log("User ID:", user?.id);
-
-  // useEffect(() => {
-  //   console.log("before fetching cart details");
-  //   const fetchCart = async () => {
-  //     if (!user?.id) {
-  //       console.log("No user ID available, skipping fetch");
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     try {
-  //       console.log("Fetching cart for user ID:", user.id);
-  //       const { data, error } = await getCartItems(user.id);
-  //       if (error) {
-  //         console.error("Error fetching cart:", error);
-  //         throw error;
-  //       }
-
-  //       console.log("Cart data received:", data);
-  //       if (data) {
-  //         setCart(data);
-  //         console.log("Filtered valid cart items:");
-  //       } else {
-  //         console.log("Invalid cart data structure:", data);
-  //         setCart([]);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching cart:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   if (user?.id) {
-  //     fetchCart();
-  //   }
-  // }, [user, setCart]);
-
   if (!user) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -61,21 +24,6 @@ const Cart = () => {
   }
 
   return (
-    // <Content className="max-w-7xl mx-auto p-4">
-    //   <Row gutter={24}>
-    //     <Col xs={24} lg={16}>
-    //       {cart.map((item) => (
-    //         <CartItem key={item.id} item={item} />
-    //       ))}
-    //       {cart.length === 0 && !loading && (
-    //         <Empty description="Your cart is empty" />
-    //       )}
-    //     </Col>
-    //     <Col xs={24} lg={8}>
-    //       <CartSummary />
-    //     </Col>
-    //   </Row>
-    // </Content>
     <Content className="max-w-7xl mx-auto p-4">
       <Row gutter={24}>
         <Col xs={24} lg={16}>
@@ -86,10 +34,10 @@ const Cart = () => {
                 console.log("Rendering cart item:", item);
                 return (
                   <CartItem
-                    key={`${item.user_id}-${item.product_id}`}
+                    key={`${item.user_id}-${item.product_id}-${item.id}`}
                     item={item}
                   />
-                ); // Use product_id as the key
+                );
               })}
             </>
           ) : (

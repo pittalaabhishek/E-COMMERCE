@@ -1,0 +1,21 @@
+.content {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 16px;
+}
+.carouselImage {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.section {
+  margin-top: 32px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.filterSection {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}

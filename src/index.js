@@ -4,17 +4,19 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { RecoilRoot } from "recoil";
-import { App as AntApp } from 'antd';
+import { ConfigProvider, App as AntdApp } from "antd";
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AntApp>
+    <ConfigProvider>
+    <AntdApp>
     <RecoilRoot>
       <App />
     </RecoilRoot>
-    </AntApp>
+    </AntdApp>
+    </ConfigProvider>
   </React.StrictMode>
 );
 

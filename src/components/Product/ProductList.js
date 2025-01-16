@@ -4,12 +4,13 @@ import { useRecoilState } from "recoil";
 import { productsState } from "../../store/atoms";
 import { getProducts } from "../../services/supabase";
 import ProductCard from "./ProductCard";
-const ProductList = () => {
+const ProductList = ({ searchQuery, categories = [] }) => {
   const [products, setProducts] = useRecoilState(productsState);
-  console.log('products');
+
+  console.log("products");
   useEffect(() => {
     const fetchProducts = async () => {
-        console.log("before fetching")
+      console.log("before fetching");
       try {
         const { data, error } = await getProducts();
         console.log("inside supabase getProducts");
@@ -19,10 +20,27 @@ const ProductList = () => {
         console.error("Error fetching products:", error);
       }
     };
-    // if (products.length === 0) {
     fetchProducts();
-    // }
-  }, [products.length, setProducts]);
+  }, [setProducts]);
+
+  const filterProducts = () => {
+    let filteredProducts = products;
+    if (searchQuery) {
+      filteredProducts = filteredProducts.filter((product) =>
+        product.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+    }
+    if (categories.length > 0) {
+      console.log("categories:", categories);
+      filteredProducts = filteredProducts.filter((product) =>
+        categories.includes(product.category_id)
+      );
+    }
+    return filteredProducts;
+  };
+
+  const filteredProducts = filterProducts();
+
   if (!products.length) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -30,10 +48,11 @@ const ProductList = () => {
       </div>
     );
   }
+
   return (
     <div className="py-8">
       <Row gutter={[16, 16]}>
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <Col key={product.id} xs={24} sm={12} md={8} lg={6}>
             <ProductCard product={product} />
           </Col>

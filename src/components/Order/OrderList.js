@@ -3,7 +3,7 @@ import { List, Card, Typography, Tag, Spin } from 'antd';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../store/atoms';
 import { getOrders } from '../../services/supabase';
-import OrderSummary from './OrderSummary';
+import OrderHistory from './OrderHistory';
 
 const { Title, Text } = Typography;
 
@@ -58,14 +58,14 @@ const OrderList = () => {
             <div>
               <Title level={5}>Order #{order.id.slice(0, 8)}</Title>
               <Text type="secondary">
-                Placed on {new Date(order.created_at).toLocaleDateString()}
+                Placed on {new Date(order.id).toLocaleDateString()}
               </Text>
             </div>
             <Tag color={getStatusColor(order.status)}>
               {order.status.toUpperCase()}
             </Tag>
           </div>
-          <OrderSummary order={order} />
+          <OrderHistory order={order} />
         </Card>
       )}
     />

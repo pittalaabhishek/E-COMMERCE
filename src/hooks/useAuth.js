@@ -26,7 +26,6 @@ const useAuth = () => {
         //   return;
         // }
   
-        message.success('Successfully logged in!');
         // console.log('Session after login:', session);
         // setUser(session.user);
       } catch (error) {

@@ -1,84 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { Card, Avatar, Button, Form, Input, message } from "antd";
-import { UserOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
-import "../styles/MyProfile.css"; // Ensure this CSS file exists
-import { handleSave } from "../services/supabase";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Card, Typography } from "antd";
+import "../styles/MyProfile.css"; // Create a simple CSS file for styling if needed
+import { useRecoilValue } from 'recoil';
+import { userState } from '../store/atoms'
+
+const { Title, Text } = Typography;
 
 const MyProfile = () => {
-  // const navigate = useNavigate();
-  // State variables to hold user details
-  const [userDetails, setUserDetails] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
-  // Load user details from localStorage on component mount
-  useEffect(() => {
-    const session = JSON.parse(localStorage.getItem("supabase.auth.token"));
-    if (session && session.currentSession) {
-      const user = session.currentSession.user;
-      setUserDetails({
-        name: user.user_metadata?.name || "",
-        email: user.email,
-        phone: user.user_metadata?.phone || "",
-      });
-    }
-  }, []);
-
-  // Handle form input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
-    }));
-  };
-
-  // Handle form submission
-  const handleFormSubmit = async () => {
-    try {
-      await handleSave(userDetails);
-      message.success("Profile updated successfully!");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      message.error("Failed to update profile.");
-    }
-  };
-
+  const user = useRecoilValue(userState);
+  
   return (
-    <div className="my-profile-container">
-      <h2>My Profile</h2>
-      <Form layout="vertical" onFinish={handleFormSubmit}>
-        <Form.Item label="Name">
-          <Input
-            name="name"
-            value={userDetails.name}
-            onChange={handleChange}
-            placeholder="Enter your name"
-          />
-        </Form.Item>
+    <div className="profile-container">
+      <Card
+        title="My Profile"
+        bordered={false}
+        style={{ width: 400, margin: "20px auto" }}
+      >
+        <Title level={4}>Name:</Title>
+        <Text>{user?.user_metadata?.name || "N/A"}</Text>
 
-        <Form.Item label="Email">
-          <Input name="email" value={userDetails.email} disabled />
-        </Form.Item>
+        <Title level={4} style={{ marginTop: "20px" }}>
+          Email:
+        </Title>
+        <Text>{user?.email || "N/A"}</Text>
 
-        <Form.Item label="Phone">
-          <Input
-            name="phone"
-            value={userDetails.phone}
-            onChange={handleChange}
-            placeholder="Enter your phone number"
-          />
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Save Changes
-          </Button>
-        </Form.Item>
-      </Form>
+        <Title level={4} style={{ marginTop: "20px" }}>
+          Phone:
+        </Title>
+        <Text>{user?.user_metadata?.phone || "N/A"}</Text>
+      </Card>
     </div>
   );
 };
