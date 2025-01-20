@@ -2,26 +2,25 @@ import React, { useEffect } from "react";
 import { Row, Col, Spin } from "antd";
 import { useRecoilState } from "recoil";
 import { productsState } from "../../store/atoms";
-import { getProducts } from "../../services/supabase";
+import useFetch from "./useFetch";
 import ProductCard from "./ProductCard";
 const ProductList = ({ searchQuery, categories = [] }) => {
   const [products, setProducts] = useRecoilState(productsState);
+  const { items, error } = useFetch();
 
-  console.log("products");
   useEffect(() => {
-    const fetchProducts = async () => {
-      console.log("before fetching");
-      try {
-        const { data, error } = await getProducts();
-        console.log("inside supabase getProducts");
-        if (error) throw error;
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
-  }, [setProducts]);
+    if (items && items.length > 0) {
+      setProducts(items);
+    }
+  }, [items, setProducts]);
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        Error: {error.message}
+      </div>
+    );
+  }
 
   const filterProducts = () => {
     let filteredProducts = products;

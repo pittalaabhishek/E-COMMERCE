@@ -16,10 +16,10 @@ const OrderList = () => {
     const fetchOrders = async () => {
       try {
         const { data, error } = await getOrders(user.id);
-        if (error) throw error;
+        if (error) console.error(error);
         setOrders(data);
       } catch (error) {
-        console.error('Error fetching orders:', error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -58,7 +58,7 @@ const OrderList = () => {
             <div>
               <Title level={5}>Order #{order.id.slice(0, 8)}</Title>
               <Text type="secondary">
-                Placed on {new Date(order.id).toLocaleDateString()}
+                Placed on {new Date(order.created_at).toLocaleDateString()}
               </Text>
             </div>
             <Tag color={getStatusColor(order.status)}>

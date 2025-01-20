@@ -1,39 +1,21 @@
-// import { useEffect } from 'react';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
-import { userState } from '../store/atoms';
-import { supabase } from '../Auth/Client';
-import { message } from 'antd';
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { userState } from "../store/atoms";
+import { supabase } from "../Auth/Client";
+import { message } from "antd";
 
 const useAuth = () => {
-    const setUser = useSetRecoilState(userState);
-  
-  const user = useRecoilValue(userState);
+  const setUser = useSetRecoilState(userState);
 
-  // Listen to auth state changes and update the user state
-  
+  const user = useRecoilValue(userState);
 
   // Login function
   const login = async (email, password) => {
-      try {
-        await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-  
-        // if (error) throw error;
-        // if (!session?.user) {
-        //   message.error('No user found. Please check your credentials');
-        //   return;
-        // }
-  
-        // console.log('Session after login:', session);
-        // setUser(session.user);
-      } catch (error) {
-        console.error('Login error:', error);
-        message.error(error.message || 'Login failed.');
-        throw error;
-      }
-    };
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { data, error };
+  };
 
   // Registration function
   const register = async (email, password, name, phone) => {
@@ -42,37 +24,34 @@ const useAuth = () => {
         email,
         password,
         options: {
-          data: { name, phone }
-        }
+          data: { name, phone },
+        },
       });
-  
+
       if (error) throw error;
-      
+
       if (data?.user) {
-        message.success('Registration successful! Please verify your email.');
+        message.success("Registration successful! Please verify your email.");
         return data; // Return the auth data
       } else {
-        throw new Error('Registration failed - no user data returned');
+        throw new Error("Registration failed - no user data returned");
       }
-  
     } catch (error) {
-      console.error('Registration error:', error);
-      message.error(error.message || 'Registration failed.');
+      message.error(error.message || "Registration failed.");
       throw error;
     }
   };
 
   // Logout function
   const logout = async () => {
-      try {
-        await supabase.auth.signOut();
-        setUser(null);
-        message.success('Successfully logged out!');
-      } catch (error) {
-        console.error('Logout error:', error);
-        message.error(error.message || 'Logout failed.');
-      }
-    };
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      message.success("Successfully logged out!");
+    } catch (error) {
+      message.error(error.message || "Logout failed.");
+    }
+  };
 
   return {
     user,
@@ -84,4 +63,3 @@ const useAuth = () => {
 };
 
 export default useAuth;
-

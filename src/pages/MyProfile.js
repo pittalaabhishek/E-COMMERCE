@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Typography } from "antd";
-import "../styles/MyProfile.css"; // Create a simple CSS file for styling if needed
+import "../styles/MyProfile.css";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/atoms'
 

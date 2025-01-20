@@ -3,7 +3,6 @@ import { Layout, Card, Form, Input, Button, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-// import '../styles/Register.css';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -20,7 +19,6 @@ const Register = () => {
       message.success('Registration successful! Please verify your email.');
       navigate('/login', { replace: true }); // Redirect to login
     } catch (error) {
-      console.error('Registration error:', error);
       message.error(error.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);

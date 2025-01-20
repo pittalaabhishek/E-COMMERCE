@@ -30,13 +30,10 @@ export const signOut = async () => {
 
 // Products functions
 export const getProducts = async () => {
-  console.log("inside getProducts");
-  console.log(supabase);
 
   const { data, error } = await supabase
     .from("products")
     .select("*, categories(name)");
-  console.log("inside supabase getProducts", data);
   return { data, error };
 };
 
@@ -52,8 +49,7 @@ export const getProductById = async (id) => {
 // Cart functions
 export const getCartItems = async (userId) => {
   if (!userId) {
-    console.error("userId is undefined or null");
-    throw new Error("userId is required");
+    console.log("userId is required");
   }
 
   const { data, error } = await supabase
@@ -73,8 +69,7 @@ export const getCartItems = async (userId) => {
     .order("created_at", { ascending: true });
 
   if (error) {
-    console.error("Error fetching cart items:", error);
-    throw error;
+    console.error(error);
   }
 
   return { data: data || [], error: null };
@@ -93,7 +88,6 @@ export const addToCart = async (userId, productId) => {
 
     if (existingItems && existingItems.length > 0) {
       // Item exists, update quantity
-      console.log('Existing items:', existingItems);
       const existingItem = existingItems[0];
       const { data, error } = await supabase
         .from("cart")
@@ -121,7 +115,6 @@ export const addToCart = async (userId, productId) => {
       return { data: data[0], error: null };
     }
   } catch (error) {
-    console.error("Error in addToCart:", error);
     return { data: null, error };
   }
 };
@@ -130,10 +123,9 @@ export const removeFromCart = async (cartId) => {
   try {
     const { error } = await supabase.from("cart").delete().eq("id", cartId);
 
-    if (error) throw error;
+    if (error) console.log(error);
     return { error: null };
   } catch (error) {
-    console.error("Error removing item from cart:", error);
     return { error };
   }
 };
@@ -151,8 +143,7 @@ export const updateCartQuantity = async (cartId, quantity) => {
       .select("*, products(id, name, price, image_url)");
 
     if (error) {
-      console.error("Error updating cart quantity:", error);
-      throw error;
+      console.error(error);
     }
 
     return { data: data[0], error: null };
@@ -166,11 +157,10 @@ export const createOrder = async (orderData) => {
   const { 
     user_id, 
     total_amount, 
-    products 
+    products
   } = orderData;
 
   if (!user_id) {
-    console.error('User ID is required');
     return { error: { message: 'User ID is required' } };
   }
 
@@ -184,11 +174,7 @@ export const createOrder = async (orderData) => {
     .select()
     .single();
 
-  console.log("Order details:", order);
-  console.log("Order error:", orderError);
-
   if (orderError) {
-    console.error('Order insertion error:', orderError);
     return { error: orderError };
   }
 

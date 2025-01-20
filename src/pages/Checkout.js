@@ -10,7 +10,7 @@ import {
   Radio,
   Button,
   message,
-  Steps,
+ Steps,
   Divider,
 } from "antd";
 import {
@@ -46,37 +46,42 @@ const Checkout = () => {
     );
   };
 
+  const handlePayment = async () => {
+    if (!user) {
+          message.error("Please login to place order");
+          return;
+        }
+        setLoading(true);
+        try {
+          const orderPayload = {
+            user_id: user.id,
+            total_amount: calculateTotal(),
+            products: cart.map((item) => ({
+              product_id: item.products.id,
+              price: item.products.price,
+              quantity: item.quantity || 1,
+            })),
+          };
+    
+          const { error } = await createOrder(orderPayload);
+          if(error)  message.error(error);
+    
+          message.success("Order placed successfully!");
+          setCurrentStep(2);
+    
+          setTimeout(() => {
+            navigate("/orders");
+          }, 3000);
+        } catch (error) {
+          message.error("Failed to place order");
+        } finally {
+          setLoading(false);
+        }
+  }
+
   //Form Submission
   const handleSubmit = async () => {
-    if (!user) {
-      message.error("Please login to place order");
-      return;
-    }
-    setLoading(true);
-    try {
-      const orderPayload = {
-        user_id: user.id,
-        total_amount: calculateTotal(),
-        products: cart.map((item) => ({
-          product_id: item.products.id,
-          price: item.products.price,
-          quantity: item.quantity || 1,
-        })),
-      };
-
-      const { error } = await createOrder(orderPayload);
-
-      message.success("Order placed successfully!");
-      setCurrentStep(2);
-
-      setTimeout(() => {
-        navigate("/orders");
-      }, 2000);
-    } catch (error) {
-      message.error("Failed to place order");
-    } finally {
-      setLoading(false);
-    }
+    setCurrentStep(1);
   };
 
   // Render Cart Items
@@ -217,7 +222,7 @@ const Checkout = () => {
                   <Form>{/* Debit Card Form Fields */}</Form>
                 )}
 
-                <Button onClick={() => setCurrentStep(2)}>Place Order</Button>
+                <Button onClick={handlePayment}>Place Order</Button>
               </div>
             )}
 

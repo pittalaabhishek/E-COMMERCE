@@ -29,7 +29,7 @@ import { getCartItems } from "./services/supabase";
 
 // Hooks
 import useAuth from "./hooks/useAuth";
-// import ProductDetail from "./components/Product/ProductDetail";
+import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 
 // Protected Route Component
 <Link path="/login" />;
@@ -52,56 +52,41 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
   const [cart, setCart] = useRecoilState(cartState);
   const user = useRecoilValue(userState);
-  // const [setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("before fetching cart details");
     const fetchCart = async () => {
       if (!user?.id) {
-        console.log("No user ID available, skipping fetch");
-        // setLoading(false);
         return;
       }
 
       try {
-        console.log("Fetching cart for user ID:", user.id);
         const { data, error } = await getCartItems(user.id);
         if (error) {
           console.error("Error fetching cart:", error);
-          throw error;
         }
-
-        console.log("Cart data received:", data);
         if (data) {
           setCart(data);
-          console.log("Filtered valid cart items:");
         } else {
-          console.log("Invalid cart data structure:", data);
           setCart([]);
         }
       } catch (error) {
         console.error("Error fetching cart:", error);
-      } finally {
-        // setLoading(false);
       }
     };
     if (user?.id) {
       fetchCart();
     }
-  }, [user, setCart]);
+  }, [cart.length, setCart]);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log("Auth state changed:", _event, session);
-
       if (session) {
         try {
           setUser({ ...session.user }); // Merge session data with profile
           setIsLoggedIn(true);
           setUserName(session.user.user_metadata.name);
-          console.log("name inside useEffect", session.user.name);
         } catch (error) {
           console.error("Error in auth state listener:", error);
         }
@@ -119,6 +104,7 @@ const App = () => {
 
   return (
     <ConfigProvider theme={theme}>
+      {/* <ErrorBoundary fallback={<div>Oops! Something went wrong</div>}> */}
       <Router>
         <Layout className="layout-container">
           <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
@@ -146,8 +132,12 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/login" element={<Login />} />
-              {/* <Route path="/login" element={<Login />} /> */}
+              <Route
+                path="/login"
+                element={
+                    <Login />
+                }
+              />
               <Route path="/register" element={<Register />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
@@ -155,6 +145,7 @@ const App = () => {
           <Footer />
         </Layout>
       </Router>
+      {/* </ErrorBoundary> */}
     </ConfigProvider>
   );
 };

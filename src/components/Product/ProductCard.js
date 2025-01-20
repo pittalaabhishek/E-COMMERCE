@@ -42,16 +42,12 @@ const ProductCard = ({ product }) => {
           throw error;
         }
 
-        // Update cart state
         setCart((prevCart) => [...prevCart, { products: product }]);
 
-        // Show success message
         message.success("Added to cart successfully!");
       } catch (error) {
-        // Handle and show error
         message.error(error.message || "Failed to add to cart");
       } finally {
-        // Reset loading state
         setLoading(false);
       }
     },

@@ -3,7 +3,7 @@ import { ShoppingCart, User, CalendarArrowUp } from "lucide-react";
 import "../../styles/Header.css";
 import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { message, Input } from "antd";
 import { supabase } from "../../Auth/Client";
 import { loginState, userNameState, cartState } from "../../store/atoms";
@@ -12,7 +12,7 @@ const AppHeader = ({ searchQuery, setSearchQuery }) => {
   const isLoggedIn = useRecoilValue(loginState);
   const userName = useRecoilValue(userNameState);
   const navigate = useNavigate();
-  const [cart, setCart] = useRecoilState(cartState);
+  const cart = useRecoilValue(cartState);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);

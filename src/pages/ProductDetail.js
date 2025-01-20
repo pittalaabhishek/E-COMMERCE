@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Layout, Spin } from 'antd';
 import { getProductById } from '../services/supabase';
 import ProductDetailComponent from '../components/Product/ProductDetail';
+import ProductList from '../components/Product/ProductList';
 
 const { Content } = Layout;
 
@@ -42,11 +43,11 @@ const ProductDetailPage = () => {
       </div>
     );
   }
-  console.log("Product Details:", product);
 
   return (
     <Content>
       <ProductDetailComponent product={product} />
+      <ProductList />
     </Content>
   );
 };

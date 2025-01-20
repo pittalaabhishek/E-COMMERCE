@@ -1,14 +1,12 @@
 import React from "react";
-import { Card, Button, Typography, Divider } from "antd";
+import { Card, Typography, Divider } from "antd";
 import { useRecoilValue } from "recoil";
 import { cartState } from "../../store/atoms";
-import { useNavigate } from "react-router-dom";
 
 const { Text, Title } = Typography;
 
 const OrderSummary = () => {
   const cart = useRecoilValue(cartState);
-  const navigate = useNavigate();
 
   const total = cart.reduce(
     (sum, item) => sum + item.products?.price * (item?.quantity || 1),

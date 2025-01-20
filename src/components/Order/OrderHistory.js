@@ -10,6 +10,7 @@ const OrderHistory = ({ order }) => {
   }
 
   const calculateTotal = () => {
+    console.log(order.order_items);
     return order.order_items.reduce((sum, item) => {
       const itemPrice = Number(item.price) || 0;
       const quantity = Number(item.quantity) || 1;

@@ -13,6 +13,7 @@ const CartItem = ({ item }) => {
   const handleRemove = async () => {
     try {
       const { error } = await removeFromCart(item.id);
+      console.error(error);
 
       setCart((prevCart) =>
         prevCart.filter((cartItem) => cartItem.id !== item.id)
@@ -34,7 +35,7 @@ const CartItem = ({ item }) => {
         )
       );
     } catch (error) {
-      console.error("Error updating quantity:", error);
+      message.error("Error updating quantity");
     }
   };
 
