@@ -1,6 +1,5 @@
 .product-card {
   width: 100%;
-  /* max-width: 250px; */
   border: 1px solid #f0f0f0;
   border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
@@ -15,7 +14,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #F9F9F9;
+  background: #e5eef0;
   cursor: pointer;
   overflow: hidden;
   padding: 20px;
@@ -24,8 +23,9 @@
 
 .product-card-image {
   height: 200px;
+  width: 100%;
   max-width: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -54,7 +54,7 @@
 }
 
 .product-price {
-  font-size: 16px;
+  font-size: 10px;
   color: #388e3c;
   font-weight: 500;
   margin-right: 10px;
@@ -63,7 +63,6 @@
 .product-rating {
   display: flex;
   align-items: center;
-  /* background-color: #388e3c; */
   color: white;
   padding: 2px 5px;
   border-radius: 3px;

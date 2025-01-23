@@ -1,0 +1,79 @@
+.debit-card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.debit-card {
+  width: 350px;
+  height: 220px;
+  background: linear-gradient(-120deg, #3900be 0%, #ff9900 100%);
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  color: white;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-logo {
+  font-size: 30px;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+.card-number-container {
+  margin-top: 50px;
+}
+
+.card-number-input,
+.card-holder-input,
+.card-expiry-input,
+.card-cvv-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  letter-spacing: 1px;
+  outline: none;
+}
+
+.card-number-input::placeholder,
+.card-holder-input::placeholder,
+.card-expiry-input::placeholder,
+.card-cvv-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card-details {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-expiry-cvv {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.card-expiry-input {
+  width: 60%;
+}
+
+.card-cvv-input {
+  width: 35%;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 400px) {
+  .debit-card {
+    width: 320px;
+    height: 200px;
+  }
+}

@@ -1,4 +1,8 @@
 import { supabase } from "../Auth/Client";
+import { userState } from "../store/atoms";
+import { useRecoilState } from "recoil";
+
+
 
 // Auth functions
 export const signUp = async (email, password, name, phone) => {
@@ -30,7 +34,6 @@ export const signOut = async () => {
 
 // Products functions
 export const getProducts = async () => {
-
   const { data, error } = await supabase
     .from("products")
     .select("*, categories(name)");
@@ -44,6 +47,19 @@ export const getProductById = async (id) => {
     .eq("id", id)
     .single();
   return { data, error };
+};
+
+export const deleteCart = async (user) => {
+  if (user) {
+    const { error } = await supabase
+      .from("cart") // Replace with your cart table name
+      .delete()
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error(error);
+    }
+  }
 };
 
 // Cart functions
@@ -154,14 +170,10 @@ export const updateCartQuantity = async (cartId, quantity) => {
 };
 
 export const createOrder = async (orderData) => {
-  const { 
-    user_id, 
-    total_amount, 
-    products
-  } = orderData;
+  const { user_id, total_amount, products } = orderData;
 
   if (!user_id) {
-    return { error: { message: 'User ID is required' } };
+    return { error: { message: "User ID is required" } };
   }
 
   const { data: order, error: orderError } = await supabase
@@ -169,7 +181,7 @@ export const createOrder = async (orderData) => {
     .insert({
       user_id: user_id,
       total_amount: Number(total_amount),
-      status: "processing"
+      status: "processing",
     })
     .select()
     .single();
@@ -190,23 +202,20 @@ export const createOrder = async (orderData) => {
     .select();
 
   if (itemsError) {
-    console.error('Order items insertion error:', itemsError);
-    
+    console.error("Order items insertion error:", itemsError);
+
     //Rollback order if items insertion fails
-    await supabase
-      .from("orders")
-      .delete()
-      .eq('id', order.id);
+    await supabase.from("orders").delete().eq("id", order.id);
 
     return { error: itemsError };
   }
 
-  return { 
-    data: { 
-      order, 
-      orderItems: insertedItems 
-    }, 
-    error: null 
+  return {
+    data: {
+      order,
+      orderItems: insertedItems,
+    },
+    error: null,
   };
 };
 

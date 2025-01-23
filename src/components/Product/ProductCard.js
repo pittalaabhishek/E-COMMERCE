@@ -19,12 +19,10 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = useCallback(
     async (e) => {
-      // Prevent navigation when clicking add to cart
       if (e) {
         e.stopPropagation();
       }
 
-      // Check if user is logged in
       if (!user) {
         message.error("Please login to add items to cart");
         return;
@@ -55,7 +53,8 @@ const ProductCard = ({ product }) => {
   );
 
   const handleProductClick = () => {
-    navigate(`/product/${product.id}`);
+    // navigate(`/product/${product.id}`);
+    window.open(`/product/${product.id}`, '_blank');
   };
 
   const handleImageError = () => {

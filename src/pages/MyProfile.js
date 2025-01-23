@@ -3,6 +3,7 @@ import { Card, Typography } from "antd";
 import "../styles/MyProfile.css";
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/atoms'
+import { CircleUser } from 'lucide-react';
 
 const { Title, Text } = Typography;
 
@@ -14,8 +15,11 @@ const MyProfile = () => {
       <Card
         title="My Profile"
         bordered={false}
-        style={{ width: 400, margin: "20px auto" }}
+        style={{ width: 400, margin: "20px auto", background: 'white' }}
       >
+        <div className="user-profile-image" style={{display: 'flex', background: '#f5f5f5', justifyContent: 'center'}}>
+          <CircleUser size={120} />
+        </div>
         <Title level={4}>Name:</Title>
         <Text>{user?.user_metadata?.name || "N/A"}</Text>
 

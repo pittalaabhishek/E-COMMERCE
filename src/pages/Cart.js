@@ -27,11 +27,11 @@ const Cart = () => {
               })}
             </>
           ) : (
-            <Empty description="Your cart is empty" />
+            <Empty description="Your cart is empty" style={{margin: "auto"}} />
           )}
         </Col>
         <Col xs={24} lg={8}>
-          <CartSummary />
+          {cart.length>-1 && <CartSummary />}
         </Col>
       </Row>
     </Content>

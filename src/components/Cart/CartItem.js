@@ -41,19 +41,27 @@ const CartItem = ({ item }) => {
 
   return (
     <Card className="ml-4">
-      <div className="flex items-center">
-        <Image
-          src={item.products?.image_url}
-          alt={item.products?.name || "Product"}
-          width={100}
-          className="object-contain"
-        />
+      <div
+        className="flex items-center"
+        style={{ display: "flex", justifyContent: "space-between" }}
+      >
+        <div>
+          <Image
+            src={item.products?.image_url}
+            alt={item.products?.name || "Product"}
+            width={100}
+            className="object-contain"
+          />
+          <div className="flex-grow ml-4">
+            <Title level={5}>{item.products?.name}</Title>
+          </div>
+        </div>
+        <div style={{flex: "1"}}>
 
-        <div className="flex-grow ml-4">
-          <Title level={5}>{item.products?.name}</Title>
-          <Text type="secondary">
-            {item.products?.category_name}
-          </Text>
+        </div>
+
+        <div className="flex-grow ml-4" style={{margin: "0 10px"}}>
+          <Text type="secondary">{item.products?.category_name}</Text>
           <div className="mt-2">
             <Text strong>₹{item.products?.price || 0}</Text>
           </div>

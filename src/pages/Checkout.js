@@ -10,7 +10,7 @@ import {
   Radio,
   Button,
   message,
- Steps,
+  Steps,
   Divider,
 } from "antd";
 import {
@@ -18,11 +18,12 @@ import {
   CreditCardOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { cartState, userState } from "../store/atoms";
-import { createOrder } from "../services/supabase";
+import { createOrder, deleteCart } from "../services/supabase";
 import { useNavigate } from "react-router-dom";
 import "../styles/Checkout.css";
+import DebitCardInput from "../components/Order/DebitCardInput";
 import OrderSummary from "../components/Order/OrderSummary";
 
 const { Title, Text } = Typography;
@@ -34,7 +35,7 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [loading, setLoading] = useState(false);
 
-  const cart = useRecoilValue(cartState);
+  const [cart, setCart] = useRecoilState(cartState);
   const user = useRecoilValue(userState);
   const navigate = useNavigate();
 
@@ -47,37 +48,43 @@ const Checkout = () => {
   };
 
   const handlePayment = async () => {
+    try {
+      await deleteCart(user);
+      setCart([]);
+    } catch (error) {
+      console.error("Failed to clear user cart:", error.message);
+    }
     if (!user) {
-          message.error("Please login to place order");
-          return;
-        }
-        setLoading(true);
-        try {
-          const orderPayload = {
-            user_id: user.id,
-            total_amount: calculateTotal(),
-            products: cart.map((item) => ({
-              product_id: item.products.id,
-              price: item.products.price,
-              quantity: item.quantity || 1,
-            })),
-          };
-    
-          const { error } = await createOrder(orderPayload);
-          if(error)  message.error(error);
-    
-          message.success("Order placed successfully!");
-          setCurrentStep(2);
-    
-          setTimeout(() => {
-            navigate("/orders");
-          }, 3000);
-        } catch (error) {
-          message.error("Failed to place order");
-        } finally {
-          setLoading(false);
-        }
-  }
+      message.error("Please login to place order");
+      return;
+    }
+    setLoading(true);
+    try {
+      const orderPayload = {
+        user_id: user.id,
+        total_amount: calculateTotal(),
+        products: cart.map((item) => ({
+          product_id: item.products.id,
+          price: item.products.price,
+          quantity: item.quantity || 1,
+        })),
+      };
+
+      const { error } = await createOrder(orderPayload);
+      if (error) message.error(error);
+
+      message.success("Order placed successfully!");
+      setCurrentStep(2);
+
+      setTimeout(() => {
+        navigate("/orders");
+      }, 3000);
+    } catch (error) {
+      message.error("Failed to place order");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   //Form Submission
   const handleSubmit = async () => {
@@ -219,7 +226,9 @@ const Checkout = () => {
                 </Radio.Group>
 
                 {paymentMethod === "debit" && (
-                  <Form>{/* Debit Card Form Fields */}</Form>
+                  <Form>
+                    <DebitCardInput />
+                  </Form>
                 )}
 
                 <Button onClick={handlePayment}>Place Order</Button>

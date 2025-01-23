@@ -25,14 +25,17 @@ const Home = ({ searchQuery }) => {
     {
       image: "https://rukminim2.flixcart.com/fk-p-flap/1620/270/image/124de624a6d2d0cf.jpeg?q=20",
       title: "Big Sale!",
+      link: "http://localhost:3000/product/4b7d9aee-8ecf-4505-ba35-9fcb4952c8f1"
     },
     {
       image: "https://rukminim2.flixcart.com/fk-p-flap/1620/270/image/2ee48b23a7140acb.jpeg?q=20",
       title: "New Arrivals",
+      link: "http://localhost:3000/product/78057b1f-43d0-41fc-ad8a-47f7fb148980"
     },
     {
       image: "https://rukminim2.flixcart.com/fk-p-flap/1620/270/image/3af38ba93e94f6bc.jpeg?q=20",
       title: "New Arrivals",
+      link: "http://localhost:3000/product/c32d1b48-75a1-494b-bade-0bdeccb2066d"
     },
   ];
 
@@ -83,7 +86,7 @@ const Home = ({ searchQuery }) => {
           ))}
         </div>
         <div className="category-popover-footer">
-          <Button type="primary" block>Apply</Button>
+          {/* <Button type="primary" block>Apply</Button> */}
         </div>
       </div>
     );
@@ -112,11 +115,13 @@ const Home = ({ searchQuery }) => {
       <Carousel autoplay>
         {carouselItems.map((item, index) => (
           <div key={index}>
+            <a href={item.link || '#'}>
             <img
               src={item.image}
               alt={item.title}
               className='carouselImage'
             />
+            </a>
           </div>
         ))}
       </Carousel>

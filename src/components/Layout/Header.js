@@ -65,7 +65,7 @@ const AppHeader = ({ searchQuery, setSearchQuery }) => {
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="search-form">
-          <div className="search-container">
+          <div className="search-container" style={{padding: "0 10px"}}>
             <SearchOutlined style={{ fontSize: "24px", color: "#1890ff" }} />
             <Input
               type="search"

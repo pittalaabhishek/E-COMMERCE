@@ -32,10 +32,10 @@ import useAuth from "./hooks/useAuth";
 import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 
 // Protected Route Component
-<Link path="/login" />;
+ <Link path="/login" />;
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  return isAuthenticated ? children : <Navigate to="/cart" replace />;
 };
 
 const theme = {
@@ -76,7 +76,7 @@ const App = () => {
     if (user?.id) {
       fetchCart();
     }
-  }, [cart.length, setCart]);
+  }, [cart.length, setCart, isLoggedIn]);
 
   useEffect(() => {
     const {
@@ -104,48 +104,43 @@ const App = () => {
 
   return (
     <ConfigProvider theme={theme}>
-      {/* <ErrorBoundary fallback={<div>Oops! Something went wrong</div>}> */}
-      <Router>
-        <Layout className="layout-container">
-          <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-          <Layout.Content className="layout-content">
-            {" "}
-            {/* Offset for fixed header */}
-            <Routes>
-              <Route path="/" element={<Home searchQuery={searchQuery} />} />
-              <Route path="/product/:id" element={<ProductDetailPage />} />
-              <Route
-                path="/cart"
-                element={
-                  <ProtectedRoute>
-                    <Cart />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route
-                path="/MyProfile"
-                element={
-                  <ProtectedRoute>
-                    <MyProfile />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                    <Login />
-                }
-              />
-              <Route path="/register" element={<Register />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Layout.Content>
-          <Footer />
-        </Layout>
-      </Router>
-      {/* </ErrorBoundary> */}
+      <ErrorBoundary fallback={<div>Oops! Something went wrong</div>}>
+        <Router>
+          <Layout className="layout-container">
+            <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <Layout.Content className="layout-content">
+              {" "}
+              {/* Offset for fixed header */}
+              <Routes>
+                <Route path="/" element={<Home searchQuery={searchQuery} />} />
+                <Route path="/product/:id" element={<ProductDetailPage />} />
+                <Route
+                  path="/cart"
+                  element={
+                    <ProtectedRoute>
+                      <Cart />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route
+                  path="/MyProfile"
+                  element={
+                    <ProtectedRoute>
+                      <MyProfile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Layout.Content>
+            <Footer />
+          </Layout>
+        </Router>
+      </ErrorBoundary>
     </ConfigProvider>
   );
 };

@@ -22,6 +22,7 @@ const OrderHistory = ({ order }) => {
   const deliveryCharge = total > 500 ? 0 : 40;
   const tax = total * 0.18;
   const finalTotal = total + deliveryCharge + tax;
+  console.log(total, deliveryCharge, tax, finalTotal);
 
   return (
     <div className="order-summary-container">
@@ -40,14 +41,14 @@ const OrderHistory = ({ order }) => {
               alt={item.products?.name || 'Product'}
               fallback="fallback-image.png"
             />
-            <div className="order-summary-product-details">
+            <div className="order-summary-product-details" style={{paddingLeft: "24px"}}>
               <Text className="order-summary-product-name">
                 {item.products?.name || 'Unknown Product'}
               </Text>
-              <br />
+              {/* <br />
               <Text className="order-summary-product-category">
                 Quantity: {item.quantity || 1}
-              </Text>
+              </Text> */}
             </div>
             <Text className="order-summary-product-price">
               ₹{((item.price || 0) * (item.quantity || 1)).toFixed(2)}

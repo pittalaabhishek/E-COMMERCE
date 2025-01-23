@@ -5,17 +5,30 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { RecoilRoot } from "recoil";
 import { ConfigProvider, App as AntdApp } from "antd";
+import { QueryClient, QueryClientProvider } from "react-query";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 2,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 30 * 60 * 1000, // 30 minutes
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ConfigProvider>
-    <AntdApp>
-    <RecoilRoot>
-      <App />
-    </RecoilRoot>
-    </AntdApp>
+      <AntdApp>
+        <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          <App />
+        </RecoilRoot>
+        </QueryClientProvider>
+      </AntdApp>
     </ConfigProvider>
   </React.StrictMode>
 );

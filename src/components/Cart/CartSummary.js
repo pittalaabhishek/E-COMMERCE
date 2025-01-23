@@ -18,7 +18,7 @@ const CartSummary = () => {
 
   const deliveryCharge = total > 500 ? 0 : 40;
   const tax = total * 0.18; // 18% GST
-  const finalTotal = total + deliveryCharge + tax;
+  const finalTotal = total  + deliveryCharge + tax;
 
   const handleCheckout = () => {
     navigate("/checkout");
